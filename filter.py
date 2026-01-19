@@ -74,3 +74,59 @@ UNIT_MAP = {
     4: "YEAR",   # 年俸
     5: "WEEK",   # 週給
 }
+
+def safe_strip(x) -> str:
+    if x is None:
+        return ""
+    try:
+        if pd.isna(x):
+            return ""
+    except:
+        pass
+    return str(x).strip()
+
+def to_int_safe(x):
+    try:
+        if x is None or pd.isna(x):
+            return None
+        return int(float(x))
+    except:
+        return None
+
+def to_float_safe(x):
+    try:
+        if x is None or pd.isna(x):
+            return None
+        return float(x)
+    except:
+        return None
+
+def pick_col(df, candidates):
+    """
+    컬럼 매핑:
+    - 1) 완전일치 우선
+    - 2) 부분일치(너무 짧은 패턴은 제외)
+    """
+    cols = list(df.columns)
+    for c in candidates:
+        if c in cols:
+            return c
+    for c in candidates:
+        if len(c) < 3:
+            continue
+        for col in cols:
+            if c in col:
+                return col
+    return None
+
+def has_garbled_text(s: str) -> bool:
+    """문자깨짐/이상문자 1차 탐지"""
+    if not isinstance(s, str) or s.strip() == "":
+        return False
+    if " " in s:
+        return True
+    if re.search(r"[\x00-\x08\x0B\x0C\x0E-\x1F]", s):
+        return True
+    if re.search(r"闖|驥|伴", s):
+        return True
+    return False
