@@ -257,3 +257,84 @@ def check_job_title(row):
     if any(t in v for t in bad_tokens):
         return ("要確認", "職種に条件/広告文言混在の可能性")
     return ("OK", "")
+
+def check_work_company_name_format(row):
+    """就業先会社名에 특수기호(㈱ 등) 포함 여부"""
+    if not col_work_company:
+        return ("要確認", "就業先会社名列なし")
+    v = safe_strip(row.get(col_work_company))
+    if v == "":
+        return ("NG", "就業先会社名が空欄")
+    if any(mark in v for mark in SPECIAL_COMPANY_MARKS):
+        return ("NG", "就業先会社名に特殊記号(㈱等)を含む")
+    return ("OK", "")
+
+def check_private_intro_company(row):
+    """
+    - 就業先会社名 == 非公開
+    - かつ 紹介会社名(또는 紹介元会社名) == 空欄 → NG
+    - 非公開 + 雇用形態が派遣社員 → NG
+    """
+    if not col_work_company:
+        return ("要確認", "就業先会社名列なし")
+
+    work_company = safe_strip(row.get(col_work_company))
+    if work_company != "非公開":
+        return ("OK", "")
+
+    # 소개회사 열이 아예 없으면 NG시키지 않고 要確認로 남김
+    if not col_intro_company:
+        return ("要確認", "紹介会社名列が見つからない(非公開案件)")
+
+    intro = safe_strip(row.get(col_intro_company))
+    if intro == "":
+        return ("NG", "就業先会社名が非公開かつ紹介会社名が空欄")
+
+    if col_employment:
+        emp = safe_strip(row.get(col_employment))
+        if emp == "派遣社員":
+            return ("NG", "就業先会社名が非公開かつ雇用形態が派遣社員")
+    return ("OK", "")
+
+def check_city_gfj(row):
+    """시구정촌 필드 유효성 & 문자깨짐 탐지"""
+    if not col_city:
+        return ("要確認", "市区町村列なし")
+    v = safe_strip(row.get(col_city))
+    if v == "":
+        return ("要確認", "市区町村が空欄")
+    if has_garbled_text(v):
+        return ("NG", "市区町村に文字化けの可能性")
+    return ("OK", "")
+
+def judge_min_wage(row):
+    """
+    - 최저임금 판정은 CQ(unitText) + CR(minValue)만 사용
+    - AF(給与) 텍스트는 사용하지 않음
+    """
+    # 都道府県
+    if not col_pref:
+        return ("要確認", "都道府県列なし", None, None, None, "列不足")
+    pref = safe_strip(row.get(col_pref))
+    if pref == "" or pref not in MIN_WAGE:
+        return ("要確認", "都道府県不明", pref, None, None, "都道府県不明")
+
+    minw = float(MIN_WAGE[pref])
+
+    if not col_wage_unit:
+        return ("要確認", "給与形態(unitText)列なし", pref, minw, None, "列不足")
+    if not col_wage_lower:
+        return ("要確認", "給与下限(minValue)列なし", pref, minw, None, "列不足")
+
+    unit_code = to_int_safe(row.get(col_wage_unit))
+    unit = UNIT_MAP.get(unit_code, "UNKNOWN")
+    lower = to_float_safe(row.get(col_wage_lower))
+
+    # 시급(HOUR)만 자동 확정
+    if unit == "HOUR":
+        if lower is None:
+            return ("要確認", "時給だが下限なし", pref, minw, lower, "HOUR下限なし")
+        return ("OK", "") if lower >= minw else ("NG", f"最低賃金未満(時給{lower} < {minw})", pref, minw, lower, "HOUR比較")
+
+    # 그 외는 환산 필요 → 要確認
+    return ("要確認", f"時給以外({unit})", pref, minw, lower, "換算必要")
