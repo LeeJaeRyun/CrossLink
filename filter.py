@@ -181,3 +181,18 @@ print("給与形態(unitText):", col_wage_unit)
 print("給与下限(minValue):", col_wage_lower)
 print("給与(自由入力・参考):", col_salary_text)
 print("================================")
+
+# ============================================================
+# 6) 체크 함수
+# ============================================================
+
+# 필수항목: "열 없음" -> 要確認 / "값 공란" -> NG
+REQUIRED_FIELDS = [
+    ("就業先会社名", col_work_company),
+    ("雇用形態", col_employment),
+    ("職種", col_job),
+    ("応募先メールアドレス", col_email),
+    ("都道府県", col_pref),
+    ("給与形態(unitText)", col_wage_unit),
+    ("給与下限(minValue)", col_wage_lower),
+]
