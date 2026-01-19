@@ -130,3 +130,21 @@ def has_garbled_text(s: str) -> bool:
     if re.search(r"闖|驥|伴", s):
         return True
     return False
+
+# ============================================================
+# 4) CSV 로드: 인코딩 자동 감지 (utf-8-sig → cp932 → utf-8)
+# ============================================================
+if not os.path.exists(CSV_PATH):
+    raise FileNotFoundError(f"CSV 파일을 찾을 수 없습니다: {CSV_PATH}")
+
+df = None
+last_err = None
+for enc in ["utf-8-sig", "cp932", "utf-8"]:
+    try:
+        df = pd.read_csv(CSV_PATH, encoding=enc)
+        break
+    except Exception as e:
+        last_err = e
+
+if df is None:
+    raise RuntimeError(f"CSV 읽기 실패. 마지막 에러: {last_err}")
