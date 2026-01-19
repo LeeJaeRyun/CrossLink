@@ -338,3 +338,60 @@ def judge_min_wage(row):
 
     # 그 외는 환산 필요 → 要確認
     return ("要確認", f"時給以外({unit})", pref, minw, lower, "換算必要")
+
+# ============================================================
+# 7) 실행 및 결과 생성
+# ============================================================
+out_rows = []
+
+for _, row in df.iterrows():
+    req_s, req_r   = check_required_fields(row)
+    email_s, email_r = check_email(row)
+    emp_s, emp_r   = check_employment(row)
+    job_s, job_r   = check_job_title(row)
+    comp_s, comp_r = check_work_company_name_format(row)
+    priv_s, priv_r = check_private_intro_company(row)
+    city_s, city_r = check_city_gfj(row)
+
+    mw_s, mw_r, mw_pref, mw_minw, mw_lower, mw_basis = judge_min_wage(row)
+
+    statuses = [req_s, email_s, emp_s, job_s, comp_s, priv_s, city_s, mw_s]
+    if "NG" in statuses:
+        total = "NG"
+    elif "要確認" in statuses:
+        total = "要確認"
+    else:
+        total = "OK"
+
+    reason = " / ".join([r for r in [req_r, mw_r, email_r, emp_r, job_r, comp_r, priv_r, city_r] if r])
+
+    unit_code = to_int_safe(row.get(col_wage_unit)) if col_wage_unit else None
+    unit_label = UNIT_MAP.get(unit_code, "UNKNOWN") if unit_code is not None else ""
+
+    out_rows.append({
+        "判定(総合)": total,
+        "理由(要約)": reason,
+
+        # 개별 판정(보기 쉽게)
+        "必須項目": req_s,
+        "応募先メール": email_s,
+        "雇用形態": emp_s,
+        "職種": job_s,
+        "就業先会社名表記": comp_s,
+        "非公開→紹介会社名": priv_s,
+        "GFJ市区町村": city_s,
+        "最低賃金判定": mw_s,
+
+        # 최저임금 "무엇을 기준으로 판정했는지" 명확화
+        "最低賃金_都道府県": mw_pref if mw_pref is not None else safe_strip(row.get(col_pref)) if col_pref else "",
+        "最低賃金_基準値(円/時)": mw_minw if mw_minw is not None else (MIN_WAGE.get(safe_strip(row.get(col_pref))) if col_pref else ""),
+        "給与形態(unitText)": unit_code if unit_code is not None else (safe_strip(row.get(col_wage_unit)) if col_wage_unit else ""),
+        "給与形態(解釈)": unit_label,
+        "給与下限(minValue)": mw_lower if mw_lower is not None else (row.get(col_wage_lower) if col_wage_lower else ""),
+        "最低賃金_判定根拠": mw_basis,
+
+        # 소개회사 매핑 디버그(OK가 NG로 잘못 떨어질 때 원인 추적용)
+        "紹介会社名_参照列": col_intro_company if col_intro_company else "",
+        "紹介会社名_値": safe_strip(row.get(col_intro_company)) if col_intro_company else "",
+    })
+
