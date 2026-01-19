@@ -196,3 +196,64 @@ REQUIRED_FIELDS = [
     ("給与形態(unitText)", col_wage_unit),
     ("給与下限(minValue)", col_wage_lower),
 ]
+
+def check_required_fields(row):
+    """필수항목 누락 여부: 열 없으면 요확인, 값 공란이면 NG"""
+    missing_values = []
+    missing_columns = []
+    for label, col in REQUIRED_FIELDS:
+        if not col:
+            missing_columns.append(label)
+            continue
+        v = safe_strip(row.get(col))
+        if v == "":
+            missing_values.append(label)
+
+    if missing_values:
+        return ("NG", "必須項目が空欄: " + ", ".join(missing_values))
+
+    if missing_columns:
+        return ("要確認", "必須列が見つからない: " + ", ".join(missing_columns))
+
+    return ("OK", "")
+
+def check_email(row):
+    """이메일 형식 유효성"""
+    if not col_email:
+        return ("要確認", "応募先メール列なし")
+    v = safe_strip(row.get(col_email))
+    if v == "":
+        return ("NG", "応募先メールが空欄")
+    parts = [p.strip() for p in v.split(",") if p.strip()]
+    if not parts:
+        return ("NG", "応募先メールが空欄")
+    for p in parts:
+        if not EMAIL_RE.match(p):
+            return ("NG", "メール形式不正")
+    return ("OK", "")
+
+def check_employment(row):
+    """고용형태가 허용 목록에 있는지 확인"""
+    if not col_employment:
+        return ("要確認", "雇用形態列なし")
+    v = safe_strip(row.get(col_employment))
+    if v == "":
+        return ("NG", "雇用形態が空欄")
+    if v not in ALLOWED_EMPLOYMENT:
+        return ("NG", f"雇用形態が許可表記と不一致: {v}")
+    return ("OK", "")
+
+def check_job_title(row):
+    """직종명에 조건/광고문구 혼입 여부"""
+    if not col_job:
+        return ("要確認", "職種列なし")
+    v = safe_strip(row.get(col_job))
+    if v == "":
+        return ("NG", "職種が空欄")
+    bad_tokens = [
+        "未経験","在宅","リモート","オープニング","募集",
+        "上場","部長","勤務地","正社員","契約社員","派遣社員","アルバイト","パート"
+    ]
+    if any(t in v for t in bad_tokens):
+        return ("要確認", "職種に条件/広告文言混在の可能性")
+    return ("OK", "")
