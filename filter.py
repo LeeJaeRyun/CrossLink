@@ -148,3 +148,36 @@ for enc in ["utf-8-sig", "cp932", "utf-8"]:
 
 if df is None:
     raise RuntimeError(f"CSV 읽기 실패. 마지막 에러: {last_err}")
+
+# ============================================================
+# 5) 컬럼 매핑
+# ============================================================
+col_work_company  = pick_col(df, ["就業先会社名"])  # U열
+col_intro_company = pick_col(df, ["紹介会社名", "紹介元会社名", "紹介元会社", "紹介会社"])  # AO열 계열
+col_email         = pick_col(df, ["応募先メールアドレス"])
+col_employment    = pick_col(df, ["雇用形態"])
+col_job           = pick_col(df, ["職種"])
+col_city          = pick_col(df, ["市区町村", "addressLocality"])
+col_pref          = pick_col(df, ["都道府県", "addressRegion", "推定都道府県"])
+
+# 최저임금(피드백2): CQ/CR만 사용
+col_wage_unit     = pick_col(df, ["給与形態(unitText)", "給与形態（unitText）", "unitText"])  # CQ
+col_wage_lower    = pick_col(df, ["給与下限(minValue)", "給与下限（minValue）", "minValue"])  # CR
+
+# AF 給与 텍스트(존재는 참고로만; 최저임금 판정에 사용 X)
+# 給与는 자유입력 텍스트라 자동 파싱이 불안정해서 오판 리스크가 크고, unitText/minValue는 구조화된 값이라 재현성과 근거가 명확해서 
+# 최저임금 자동 판정은 CQ/CR만 사용합니다. 給与는 참고/불일치 확인 용도로만 유지합니다.
+col_salary_text   = pick_col(df, ["給与"])
+
+print("=== 컬럼 매핑(반드시 확인) ===")
+print("就業先会社名:", col_work_company)
+print("紹介会社名(参照):", col_intro_company)
+print("応募先メールアドレス:", col_email)
+print("雇用形態:", col_employment)
+print("職種:", col_job)
+print("市区町村:", col_city)
+print("都道府県:", col_pref)
+print("給与形態(unitText):", col_wage_unit)
+print("給与下限(minValue):", col_wage_lower)
+print("給与(自由入力・参考):", col_salary_text)
+print("================================")
