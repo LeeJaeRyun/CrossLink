@@ -395,3 +395,17 @@ for _, row in df.iterrows():
         "紹介会社名_値": safe_strip(row.get(col_intro_company)) if col_intro_company else "",
     })
 
+check_df = pd.DataFrame(out_rows)
+df_out = pd.concat([check_df, df], axis=1)
+
+# ============================================================
+# 8) 저장
+# ============================================================
+with pd.ExcelWriter(OUT_XLSX, engine="openpyxl") as writer:
+    df_out.to_excel(writer, sheet_name="審査結果", index=False)
+    df_out[df_out["判定(総合)"] == "NG"].to_excel(writer, sheet_name="NGのみ", index=False)
+    df_out[df_out["判定(総合)"] == "要確認"].to_excel(writer, sheet_name="要確認のみ", index=False)
+
+print("\n✅ 저장 완료:", OUT_XLSX)
+print("✅ 소개회사명 매핑(参照列):", col_intro_company)
+print("✅ 최저임금 판정 기준: 給与形態(unitText) + 給与下限(minValue) (給与 텍스트는 사용 X)")
