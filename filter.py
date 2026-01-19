@@ -18,3 +18,21 @@ Downloads 폴더에 Excel(.xlsx) 저장:
 import os
 import re
 import pandas as pd
+from datetime import datetime
+
+# ============================================================
+# 0) 경로 설정
+# ============================================================
+USER_HOME = os.path.expanduser("~")
+DOWNLOADS = os.path.join(USER_HOME, "Downloads")
+
+CSV_NAME = "JobMasterList_202601051629.csv"  # CSV 파일명
+CSV_PATH = os.path.join(DOWNLOADS, CSV_NAME)
+
+OUT_XLSX_BASE = "審査結果_JobMasterList_202601051629.xlsx"
+OUT_XLSX = os.path.join(DOWNLOADS, OUT_XLSX_BASE)
+
+# 파일이 이미 존재하면 타임스탬프 붙여 새로 저장 (권한/덮어쓰기 문제 예방)
+if os.path.exists(OUT_XLSX):
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    OUT_XLSX = os.path.join(DOWNLOADS, f"審査結果_JobMasterList_202601051629_{ts}.xlsx")
