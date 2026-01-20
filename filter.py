@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-filter2.py
+filter.py
 
 [목표]
 JobMasterList CSV를 읽어:
