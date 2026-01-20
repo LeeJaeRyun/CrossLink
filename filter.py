@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 filter.py
+csv 넣으면 -> xlsv 출력
 
 [목표]
 JobMasterList CSV를 읽어:
