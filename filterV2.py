@@ -71,7 +71,7 @@ SPECIAL_COMPANY_MARKS = ["㈱", "（株）", "(株)", "㈲", "（有）", "(有)
 UNIT_MAP = {1: "HOUR", 2: "DAY", 3: "MONTH", 4: "YEAR", 5: "WEEK"}
 
 # ============================================================
-# 3) 담당자 지정 환산값(핵심)
+# 3) 담당자 지정 환산값
 # ============================================================
 ASSUME_HOURS_PER_DAY = 8.0
 ASSUME_HOURS_PER_MONTH = 160.0   # 8h * 20d
@@ -218,7 +218,7 @@ def check_city_garbled(row):
         return "NG", "市区町村に文字化けの可能性"
     return "OK", ""
 
-# ---- 職種判定(실무형 완화) ----
+# ---- 職種判定 ----
 JOB_CONDITION_TOKENS = [
     "募集", "急募", "大募集", "積極採用", "オープニング", "新規",
     "正社員", "契約社員", "派遣社員", "アルバイト", "パート", "業務委託",
@@ -263,7 +263,7 @@ def check_job_title(row):
 
     return "OK", ""
 
-# ---- 最低賃金 判定(담당자 방식 반영) ----
+# ---- 最低賃金 判定 ----
 def resolve_pref(row) -> Tuple[str, str]:
     pref_raw = safe_strip(row.get(col_pref))
     if pref_raw in MIN_WAGE:
