@@ -405,7 +405,7 @@ for _, r in df.iterrows():
         "時給換算値(円/時)": mw_hourly,
         "最低賃金_換算根拠": mw_basis,
 
-        # 디버그용
+        # debug
         "勤務地住所": safe_strip(r.get(col_address)),
         "市区町村（addressLocality）": safe_strip(r.get(col_city)),
         "勤務時間/月平均所定労働時間": safe_strip(r.get(col_worktime)),
