@@ -3,6 +3,36 @@
 
 ---
 
+# 버전업 변경점 (filterV2.py → filterV3.py)
+
+<details>
+<summary>🇰🇷 Korean Version (한국어판) をクリック</summary>
+
+| 항목 | 변경사항 |
+|------|---------|
+| **입력 포맷** | XLSX → CSV |
+| **소개원 회사명 체크** | ✅ 새로 추가 (`check_intro_company_special()`) |
+| **소개원 특수기호 NG** | ✅ 새 컬럼 `紹介元会社名表記` 추가 |
+| **직종 - 시설명 체크** | ❌ 제거 (v2에서는 요확인) |
+| **직종 - 숫자 체크** | ✅ 새로 추가 (숫자 포함 → 요확인) |
+
+</details>
+
+<details>
+<summary>🇯🇵 Japanese Version (日本語版) をクリック</summary>
+
+| 項目 | 変更内容 |
+|------|---------|
+| **入力形式** | XLSX → CSV |
+| **紹介元会社名チェック** | ✅ 新規追加 (`check_intro_company_special()`) |
+| **紹介元特殊記号 NG** | ✅ 新カラム `紹介元会社名表記` 追加 |
+| **職種 - 施設名チェック** | ❌ 削除 (v2では要確認) |
+| **職種 - 数字チェック** | ✅ 新規追加 (数字含む → 要確認) |
+
+</details>
+
+---
+
 # 버전업 변경점 (filter.py → filterV2.py)
 
 <details>
