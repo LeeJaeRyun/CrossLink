@@ -31,11 +31,11 @@ from typing import Optional, Tuple
 USER_HOME = os.path.expanduser("~")
 DOWNLOADS = os.path.join(USER_HOME, "Downloads")
 
-CSV_NAME = "ハピリク審査データ.csv"
+CSV_NAME = "審査データ_20260125分まで.csv"
 CSV_PATH = os.path.join(DOWNLOADS, CSV_NAME)
 
 ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-OUT_XLSX = os.path.join(DOWNLOADS, f"審査結果_JobMasterList_202601051629_{ts}.xlsx")
+OUT_XLSX = os.path.join(DOWNLOADS, f"Filtered_list_{ts}.xlsx")
 
 # ============================================================
 # [최저임금 DB]
