@@ -38,7 +38,7 @@ ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 OUT_XLSX = os.path.join(DOWNLOADS, f"審査結果_JobMasterList_202601051629_{ts}.xlsx")
 
 # ============================================================
-# [최저임금 DB - 2025년도]
+# [최저임금 DB]
 # ============================================================
 MIN_WAGE = {
     "北海道": 1075, "青森": 1029, "岩手": 1031, "宮城": 1038, "秋田": 1031, "山形": 1032, "福島": 1033,
@@ -53,7 +53,7 @@ PREF_LIST = list(MIN_WAGE.keys())
 PREF_RE = re.compile("|".join(map(re.escape, sorted(PREF_LIST, key=len, reverse=True))))
 
 # ============================================================
-# [허용되는 고용형태 (정확 일치)]
+# [허용되는 고용형태]
 # ============================================================
 ALLOWED_EMPLOYMENT = {
     "正社員","契約社員","派遣社員","パート","アルバイト",
@@ -69,7 +69,7 @@ SPECIAL_COMPANY_MARKS = ["㈱", "（株）", "(株)", "㈲", "（有）", "(有)
 UNIT_MAP = {1: "HOUR", 2: "DAY", 3: "MONTH", 4: "YEAR", 5: "WEEK"}
 
 # ============================================================
-# [최저임금 환산 상수 (담당자 지정)]
+# [최저임금 환산 상수]
 # ============================================================
 ASSUME_HOURS_PER_DAY = 8.0
 ASSUME_HOURS_PER_MONTH = 160.0   # 8h * 20d
@@ -168,6 +168,7 @@ REQUIRED_COLS_BASE = [
     col_city, col_wage_unit, col_wage_lower
 ]
 
+# 회사명, 고용형태, 직종, 이메일, 시구정촌, 급여형태, 최저임금(급여하한) 확인
 def check_required(row):
     missing = []
     for c in REQUIRED_COLS_BASE:
@@ -178,6 +179,7 @@ def check_required(row):
         return "NG", "必須項目が空欄: " + ", ".join(missing)
     return "OK", ""
 
+# 정규식으로 메일 형식 검증 (쉼표/세미콜론으로 분리된 복수 메일 지원)
 def check_email(row):
     v = safe_strip(row.get(col_email))
     if v == "":
@@ -191,6 +193,7 @@ def check_email(row):
             return "NG", f"メール形式不正: {p}"
     return "OK", ""
 
+# 화이트리스트에 있는 고용형태인지 확인
 def check_employment(row):
     v = safe_strip(row.get(col_employment))
     if v == "":
