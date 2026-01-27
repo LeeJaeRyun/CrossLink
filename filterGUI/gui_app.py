@@ -15,7 +15,6 @@ def default_output_path():
 
 def open_folder(path):
     folder = os.path.dirname(path)
-    # Windows 탐색기 열기
     subprocess.Popen(["explorer", folder])
 
 class App(tk.Tk):
