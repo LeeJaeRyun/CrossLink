@@ -159,9 +159,9 @@ def check_company_special(row):
     """[체크 1] 채용처 회사명: 특수기호(㈱) 확인"""
     v = safe_strip(row.get(col_work_company))
     if v == "":
-        return "NG", "채용처 회사명 공란"
+        return "NG", "採用先会社名空欄" # 채용처 회사명 공란
     if any(mark in v for mark in SPECIAL_COMPANY_MARKS):
-        return "NG", "채용처에 특수기호 포함(㈱)"
+        return "NG", "採用先に特殊記号を含む(㈱)" # 채용처에 특수기호 포함(㈱)
     return "OK", ""
 
 def check_intro_company_special(row):
@@ -170,7 +170,7 @@ def check_intro_company_special(row):
     if v == "":
         return "OK", ""  # 공란 허용
     if any(mark in v for mark in SPECIAL_COMPANY_MARKS):
-        return "NG", "소개원에 특수기호 포함(㈱)"
+        return "NG", "採用先に特殊記号を含む(㈱)" # 소개원에 특수기호 포함(㈱)
     return "OK", ""
 
 def check_private_intro(row):
