@@ -5,7 +5,9 @@
 
 # filterGUI
 <details>
-<summary>filterGUI(gui_app.py + filter_core.py</summary>
+<summary>filterGUI (gui_app.py + filter_core.py)</summary>
+
+### 개요 및 버전
 - 이 툴을 사용할 사용자들이 비개발자일 경우인 점을 고려하여 사용하기 쉽게 만들어달라는 요청을 하심에 따라 추가함
 - GUI + exe로 배포
 - filter_core_v2 -> 담당자님이 추가하신 조건 반영 (현재버전)
