@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 import subprocess
 
-from filter_core import run_filter
+from filter_core_v2 import run_filter
 
 def default_output_path():
     downloads = os.path.join(os.path.expanduser("~"), "Downloads")
