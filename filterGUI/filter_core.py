@@ -8,7 +8,7 @@ filter_core.py - 채용공고 자동 필터링 시스템 (Core)
 """
 
 import os
-import re
+import re   
 import pandas as pd
 from datetime import datetime
 from typing import Optional, Tuple
@@ -219,18 +219,18 @@ def looks_like_place(s: str) -> bool:
 def check_job_title(row):
     v = safe_strip(row.get(col_job))
     if v == "":
-        return "NG", "직종 공란"
+        return "NG", "職種が空欄" # 직종 공란
 
     if PREF_RE.search(v):
-        return "NG", "직종에 지역명(도도부현) 포함"
+        return "NG", "職種に地域名（都道府県）が含まれている" # 직종에 지역명(도도부현) 포함
     if looks_like_place(v):
-        return "NG", "직종에 지명형식(○○구/시/町/村/역) 포함"
+        return "NG", "職種に地名形式（○○区／市／町／村／駅）が含まれている" # 직종에 지명형식(○○구/시/町/村/역) 포함
 
     if any(t in v for t in JOB_CONDITION_TOKENS):
-        return "要確認", "직종에 모집/고용형태/근무시간/역할/조건 혼합 가능"
+        return "要確認", "職種に募集条件・雇用形態・勤務条件等が混在している可能性" # 직종에 모집/고용형태/근무시간/역할/조건 혼합 가능
 
     if re.search(r"\d", v):
-        return "要確認", "직종에 숫자 포함(관리번호 가능성)"
+        return "要確認", "職種に数字が含まれている（管理番号等の可能性）" # 직종에 숫자 포함(관리번호 가능성)
 
     return "OK", ""
 
