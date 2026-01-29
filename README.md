@@ -136,7 +136,7 @@ gui_app.py
 ├─ GUI状態更新（完了メッセージ等）
 └─ 結果フォルダ自動オープン
 ```
-</detail>
+</details>
 
 # 버전업 변경점 (filterV2.py → filterV3.py)
 
