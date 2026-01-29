@@ -5,7 +5,7 @@
 
 # filterGUI
 <details>
-<summary>filterGUI (gui_app.py + filter_core.py)</summary>
+<summary>filterGUI (gui_app.py + filter_core.py) 🇰🇷 Korean Version (한국어판) をクリック</summary>
 
 ### 개요 및 버전
 - 이 툴을 사용할 사용자들이 비개발자일 경우인 점을 고려하여 사용하기 쉽게 만들어달라는 요청을 하심에 따라 추가함
@@ -70,6 +70,73 @@ gui_app.py
     └─ 결과 폴더 자동 오픈
 ```
 </details>
+
+<details>
+<summary>filterGUI (gui_app.py + filter_core.py) 🇯🇵 Japanese Version (日本語版) をクリック</summary>
+
+### 概要・バージョン
+- 本ツールは、利用者が非開発者であることを考慮し、使いやすくしてほしいという要望を受けて追加しました
+- GUI + exe 形式で配布
+- filter_core_v2 → 担当者様が追加された条件を反映（現行バージョン）
+  - 以前は「非公開＋派遣社員」を一律で NG と判定していましたが、担当者様のフィードバックにより、紹介元会社名の入力有無および内容に応じて OK / NG を分岐するロジックに修正しました
+
+### シナリオ
+ユーザー：FilteredTool.exe をダブルクリック → 画面表示 → CSV選択 → 実行  
+結果：Downloads\Filtered_list_YYYYMMDD_HHMMSS.xlsx が生成  
+完了メッセージ ＋ 「フォルダを開く」ボタン
+
+### 使用方法（exe生成手順）
+1. 必要なライブラリをインストール（初回のみ）
+   pip install pandas openpyxl pyinstaller
+
+2. filter_core.py と gui_app.py が存在するディレクトリで、以下のコマンドを実行
+   pyinstaller --onefile --noconsole --name FilteredTool gui_app.py
+
+### [GUI ↔ Core 連携構造]
+```
+gui_app.py (GUIエントリーポイント)
+│
+├─ CSVファイル選択 UI
+│
+├─ [実行] ボタンクリック
+│
+└─ run() メソッド呼び出し
+│
+▼
+filter_core.run_filter(csv_path, out_xlsx)
+│
+├─ CSVエンコーディング自動判定
+│ ├─ utf-8-sig
+│ ├─ cp932
+│ └─ utf-8
+│
+├─ 審査チェックロジック実行（全9項目）
+│ ├─ check_required() # 必須項目の欠落有無
+│ ├─ check_email() # メール形式検証
+│ ├─ check_employment() # 雇用形態検証
+│ ├─ check_company_special() # 会社名の特殊文字
+│ ├─ check_intro_company_special() # 紹介会社名の特殊文字
+│ ├─ check_private_intro() # 非公開 + 紹介会社名未入力
+│ ├─ check_city_garbled() # 市・区・町名の文字化け
+│ ├─ check_job_title() # 職種混在有無
+│ └─ judge_min_wage() # 最低賃金判定
+│
+├─ 審査結果 DataFrame 作成
+│
+└─ Excel(.xlsx) 保存（3シート）
+├─ 審査結果 : 全体結果
+├─ NGのみ : NG項目のみ
+└─ 要確認のみ : 要確認項目のみ
+│
+▼
+結果ファイルパス返却
+│
+▼
+gui_app.py
+├─ GUI状態更新（完了メッセージ等）
+└─ 結果フォルダ自動オープン
+```
+</detail>
 
 # 버전업 변경점 (filterV2.py → filterV3.py)
 
