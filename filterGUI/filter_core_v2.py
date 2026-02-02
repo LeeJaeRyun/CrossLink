@@ -170,7 +170,7 @@ def check_intro_company_special(row):
     if v == "":
         return "OK", ""  # 공란 허용
     if any(mark in v for mark in SPECIAL_COMPANY_MARKS):
-        return "NG", "採用先に特殊記号を含む(㈱)" # 소개원에 특수기호 포함(㈱)
+        return "NG", "紹介元に特殊記号を含む(㈱)" # 소개원에 특수기호 포함(㈱)
     return "OK", ""
 
 def check_private_intro(row):
