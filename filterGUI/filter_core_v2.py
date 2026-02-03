@@ -192,6 +192,10 @@ def check_private_intro(row):
         if intro == "非公開":
             return "NG", "就業先会社名が非公開かつ雇用形態が派遣社員(紹介元会社名が未入力・非公開)"
         return "OK", ""
+    # (조건 5) 공란은 위에서 NG 처리됨
+    # 단, '非公開'는 NG
+    if intro == "非公開":
+        return "NG", "就業先会社名が非公開かつ雇用形態が派遣社員以外(紹介元会社名が非公開)"
 
     return "OK", ""
 
