@@ -1,7 +1,7 @@
-# filter_core.py
+# filter_core_v2.py
 # -*- coding: utf-8 -*-
 """
-filter_core.py - 채용공고 자동 필터링 시스템 (Core)
+filter_core_v2.py - 채용공고 자동 필터링 시스템 (Core)
 
 - 기존 filterV3 로직을 그대로 유지하되,
   GUI/외부에서 호출하기 위해 run_filter(csv_path, out_xlsx) 함수로 감싼 버전입니다.
