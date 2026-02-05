@@ -12,11 +12,12 @@ import re
 import pandas as pd
 from datetime import datetime
 from typing import Optional, Tuple
+import json
 
 # ============================================================
 # [최저임금 DB]
 # ============================================================
-MIN_WAGE = {
+DEFAULT_MIN_WAGE = {
     "北海道": 1075, "青森": 1029, "岩手": 1031, "宮城": 1038, "秋田": 1031, "山形": 1032, "福島": 1033,
     "茨城": 1074, "栃木": 1068, "群馬": 1063, "埼玉": 1141, "千葉": 1140, "東京": 1226, "神奈川": 1225,
     "新潟": 1050, "富山": 1062, "石川": 1054, "福井": 1053, "山梨": 1052, "長野": 1061, "岐阜": 1065,
@@ -25,6 +26,42 @@ MIN_WAGE = {
     "徳島": 1046, "香川": 1036, "愛媛": 1033, "高知": 1023, "福岡": 1057, "佐賀": 1030, "長崎": 1031,
     "熊本": 1034, "大分": 1035, "宮崎": 1023, "鹿児島": 1026, "沖縄": 1023,
 }
+
+# ============================================================
+# [최저임금 설정(영속화)]
+# GUI로 편집 → 저장하면 다음 번에도 반영
+# 저장 파일이 없으면 기본값 그대로
+# ============================================================
+def get_desktop_dir() -> str:
+    # Windows 바탕화면 경로
+    return os.path.join(os.path.expanduser("~"), "Desktop")
+
+DESKTOP_DIR = get_desktop_dir()
+MIN_WAGE_JSON = os.path.join(DESKTOP_DIR, "FilteredTool_最低賃金.json")
+
+def load_min_wage() -> dict:
+    # 바탕화면에 파일 없으면 기본값
+    if not os.path.exists(MIN_WAGE_JSON):
+        return dict(DEFAULT_MIN_WAGE)
+
+    try:
+        with open(MIN_WAGE_JSON, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        merged = dict(DEFAULT_MIN_WAGE)
+        for k, v in data.items():
+            if k in merged:
+                merged[k] = int(v)
+        return merged
+    except Exception:
+        return dict(DEFAULT_MIN_WAGE)
+
+def save_min_wage(new_map: dict) -> str:
+    with open(MIN_WAGE_JSON, "w", encoding="utf-8") as f:
+        json.dump(new_map, f, ensure_ascii=False, indent=2)
+    return MIN_WAGE_JSON
+
+MIN_WAGE = load_min_wage()
 PREF_LIST = list(MIN_WAGE.keys())
 PREF_RE = re.compile("|".join(map(re.escape, sorted(PREF_LIST, key=len, reverse=True))))
 
