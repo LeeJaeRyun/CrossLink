@@ -1,5 +1,8 @@
 # gui_app.py
 # -*- coding: utf-8 -*-
+
+# 현재 filter_core_v2.py 모듈을 사용하는 GUI 애플리케이션
+
 import os
 from datetime import datetime
 import tkinter as tk
